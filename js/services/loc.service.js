@@ -21,8 +21,15 @@ function getLocs() {
 }
 
 
-function createPlace() {
-    // storageService.post(locsDB, )
+function createPlace(name, lat, lng) {
+    place = {
+        name,
+        lat,
+        lng,
+    }
+    locs.push(place)
+    storageService.post(locsDB, place)
+
 }
 
 function readPlace() {

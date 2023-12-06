@@ -34,7 +34,7 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
         JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
       )
       infoWindow.open(gMap)
-    //   return mapsMouseEvent.latLng.toJSON()
+      return console.log(mapsMouseEvent.latLng.toJSON())
     })
   })
 }
