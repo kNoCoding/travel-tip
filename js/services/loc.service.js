@@ -1,49 +1,42 @@
 import { storageService } from './async-storage.service.js'
+import { utils } from './utils.service.js'
 
 export const locService = {
-    getLocs
+  getLocs,
+  getLoc,
+  createLoc,
+  deleteLoc,
 }
 
-const LOCS_STORAGE_KEY = 'locsDB'
-
-
-const locs = [
-    { name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
-    { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
+let locs = [
+  { id: 'abc123', name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
+  { id: 'aaBb11', name: 'Neveragain', lat: 32.047201, lng: 34.832581 },
 ]
 
 function getLocs() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(locs)
-        }, 2000)
-    })
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(locs)
+    }, 2000)
+  })
 }
 
-
-function createPlace(name, lat, lng) {
-    place = {
-        name,
-        lat,
-        lng,
-    }
-    locs.push(place)
-    storageService.post(locsDB, place)
-
+function createLoc(name, lat, lng) {
+  let loc = {
+    name,
+    lat,
+    lng,
+    id: utils.getRandomId(),
+  }
+  locs.push(loc)
+  //   storageService.post(locsDB, loc)
 }
 
-function readPlace() {
-
+function getLoc(id) {
+    console.log('test');
+    return locs.find((loc) => loc.id === id)
 }
 
-function updatePlace() {
-
-}
-
-function deletePlace() {
-
-}
-
-function listPlace() {
-
+function deleteLoc(id) {
+    locs = locs.filter((loc) => loc.id!== id)
 }

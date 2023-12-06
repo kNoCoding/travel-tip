@@ -5,6 +5,9 @@ export const mapService = {
   codeAddress,
 }
 
+import { locService } from "./loc.service.js"
+import { main } from "../app.controller.js"
+
 // Var that is used throughout this Module (not global)
 var gMap
 var infoWindow
@@ -40,7 +43,8 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
       infoWindow.open(gMap)
       //   return mapsMouseEvent.latLng.toJSON()
       let name = prompt("What's this location?")
-      createPlace(name, lat, lng)
+      locService.createLoc(name, lat, lng)
+      main.onMapClick()
     })
   })
 }
