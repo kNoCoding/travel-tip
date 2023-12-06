@@ -2,7 +2,7 @@ import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
 export const main = {
-    onMapClick
+  onMapClick,
 }
 
 window.onload = onInit
@@ -13,6 +13,7 @@ window.onGetUserPos = onGetUserPos
 window.onSearch = onSearch
 window.onGoto = onGoto
 window.onDelete = onDelete
+window.onMyLoc = onMyLoc
 
 function onInit() {
   mapService
@@ -52,6 +53,7 @@ function onGetUserPos() {
       console.log('err!!!', err)
     })
 }
+
 function onPanTo() {
   console.log('Panning the Map')
   mapService.panTo(35.6895, 139.6917)
@@ -62,6 +64,16 @@ function onSearch(ev) {
   const elSeachBar = document.querySelector('.search-bar')
   var address = elSeachBar.value
   mapService.codeAddress(address)
+}
+
+function onMyLoc() {
+  getPosition()
+    .then((pos) => {
+      mapService.panTo(pos.coords.latitude, pos.coords.longitude)
+    })
+    .catch((err) => {
+      console.log('err!!!', err)
+    })
 }
 
 function onGoto(id) {
@@ -77,7 +89,7 @@ function onDelete(id) {
 }
 
 function onMapClick() {
-    renderLocs()
+  renderLocs()
 }
 
 function renderLocs() {
