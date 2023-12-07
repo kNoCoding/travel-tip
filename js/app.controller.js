@@ -2,7 +2,7 @@ import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
 export const main = {
-  onMapClick,
+  renderLocs,
 }
 
 window.onload = onInit
@@ -20,6 +20,7 @@ function onInit() {
     .initMap()
     .then(() => {
       console.log('Map is ready')
+      renderLocs()
     })
     .catch(() => console.log('Error: cannot init map'))
 }
@@ -78,30 +79,45 @@ function onMyLoc() {
 
 function onGoto(id) {
   console.log('Goto', id)
-  let loc = locService.getLoc(id)
-  mapService.panTo(loc.lat, loc.lng)
+  locService.getLoc(id).then((loc) => {
+    mapService.panTo(loc.lat, loc.lng)
+  })
 }
 
 function onDelete(id) {
   console.log('Delete', id)
-  locService.deleteLoc(id)
-  renderLocs()
+  locService
+    .deleteLoc(id)
+    .then(() => {
+      renderLocs()
+      console.log('Locations rendered')
+    })
+    .catch((error) => {
+      console.error('Error deleting location:', error)
+    })
 }
 
-function onMapClick() {
-  renderLocs()
-}
+function onMapClick() {}
 
 function renderLocs() {
-  locService.getLocs().then((locs) => {
-    let locsHTML = locs
-      .map((loc) => {
-        return `
-                <span class="loc">${loc.name}<button onclick="onGoto('${loc.id}')">goto</button><button onclick="onDelete('${loc.id}')">delete</button></span>
-                `
-      })
-      .join('')
-    console.log('Locations:', locs)
-    document.querySelector('.locs').innerHTML = locsHTML
-  })
+  locService
+    .getLocs()
+    .then((locs) => {
+      let locsHTML = locs
+        .map((loc) => {
+          return `
+            <span class="loc">${loc.name}
+              <button onclick="onGoto('${loc.id}')">goto</button>
+              <button onclick="onDelete('${loc.id}')">delete</button>
+            </span>
+          `
+        })
+        .join('')
+
+      console.log('Locations:', locs)
+      document.querySelector('.locs').innerHTML = locsHTML
+    })
+    .catch((error) => {
+      console.error('Error rendering locations:', error)
+    })
 }

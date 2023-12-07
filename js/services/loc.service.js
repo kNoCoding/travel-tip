@@ -8,17 +8,27 @@ export const locService = {
   deleteLoc,
 }
 
-let locs = [
-  { id: 'abc123', name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
-  { id: 'aaBb11', name: 'Neveragain', lat: 32.047201, lng: 34.832581 },
-]
+const DB_KEY = 'locationsDB'
+
 
 function getLocs() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(locs)
-    }, 2000)
-  })
+  // Assume storageService.query returns a Promise
+  return storageService
+    .query(DB_KEY)
+    .then((res) => {
+      // Check if there is data in the result
+      if (res && res.length > 0) {
+        // If there is data, return it
+        return res
+      } else {
+        return []
+      }
+    })
+    .catch((err) => {
+      console.log('err', err)
+      // Handle the error as needed
+      throw err // Rethrow the error or handle it accordingly
+    })
 }
 
 function createLoc(name, lat, lng) {
@@ -26,17 +36,26 @@ function createLoc(name, lat, lng) {
     name,
     lat,
     lng,
-    id: utils.getRandomId(),
   }
-  locs.push(loc)
-  //   storageService.post(locsDB, loc)
+  return Promise.resolve(storageService.post(DB_KEY, loc))
 }
 
 function getLoc(id) {
-    console.log('test');
-    return locs.find((loc) => loc.id === id)
+  console.log('test')
+  return storageService.get(DB_KEY, id)
 }
 
 function deleteLoc(id) {
-    locs = locs.filter((loc) => loc.id!== id)
-}
+    return getLoc(id)
+      .then((loc) => {
+        console.log('Deleting loc:', loc);
+        return storageService.remove(DB_KEY, id);
+      })
+      .then(() => {
+        console.log('Location deleted');
+      })
+      .catch((error) => {
+        console.error('Error deleting location:', error);
+        throw error;
+      });
+  }

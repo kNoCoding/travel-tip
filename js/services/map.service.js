@@ -43,8 +43,9 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
       infoWindow.open(gMap)
       //   return mapsMouseEvent.latLng.toJSON()
       let name = prompt("What's this location?")
-      locService.createLoc(name, lat, lng)
-      main.onMapClick()
+      locService.createLoc(name, lat, lng).then((loc)=>{
+        main.renderLocs()
+      })
     })
   })
 }
